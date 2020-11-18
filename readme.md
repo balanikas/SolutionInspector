@@ -10,4 +10,4 @@ Clone and run
 reimplement as a Visual Studio extension
 
 ## look like this
-![Drag Racing](app.png)
+![Alt text](/app.PNG?raw=true "Title")
