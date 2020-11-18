@@ -1,0 +1,30 @@
+﻿@page "/codeanalysis"
+
+@using BlazorTable
+
+@inject SolutionInspectionService SolutionInspectionService
+@inject MetaDataTransformer MetaDataTransformer
+
+@if (solutionMetaData == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <Table TableItem="ProjectCodeAnalysisMetaData" Items="solutionMetaData.Projects" PageSize="-1">
+        <Column TableItem="ProjectCodeAnalysisMetaData" Title="AssemblyName" Field="@(x => x.AssemblyName)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectCodeAnalysisMetaData" Title="WarningLevel" Field="@(x => x.WarningLevel)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectCodeAnalysisMetaData" Title="NoWarn" Field="@(x => x.NoWarn)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectCodeAnalysisMetaData" Title="WarningsAsErrors" Field="@(x => x.WarningsAsErrors)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectCodeAnalysisMetaData" Title="UsesEditorConfig" Field="@(x => x.UsesEditorConfig)" Sortable="true" Filterable="true" />
+    </Table>
+}
+
+@code {
+    private ProjectMetaData<ProjectCodeAnalysisMetaData>? solutionMetaData;
+
+    protected override async Task OnInitializedAsync()
+    {
+        solutionMetaData = await SolutionInspectionService.GetProjectMetaDataAsync<ProjectCodeAnalysisMetaData>(MetaDataTransformer.GetProjectCodeAnalysisMetaData);
+    }
+}

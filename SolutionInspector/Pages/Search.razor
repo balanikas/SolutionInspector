@@ -1,0 +1,35 @@
+﻿@page "/search"
+
+@using BlazorTable
+@inject SolutionInspectionService SolutionInspectionService
+
+@if (solution == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="@_searchResult" OnValidSubmit="@SearchByProperty">
+        <InputText class="form-control" id="name" @bind-Value="_searchText" />
+    </EditForm>
+
+    <Table TableItem="KeyValuePair<string,string>" Items="_searchResult" PageSize="-1">
+        <Column TableItem="KeyValuePair<string,string>" Title="AssemblyName" Field="@(x => x.Key)" Sortable="true" Filterable="true" />
+        <Column TableItem="KeyValuePair<string,string>" Title="Property" Field="@(x => x.Value)" Sortable="true" Filterable="true" />
+    </Table>
+}
+
+@code {
+    private Solution? solution;
+    private Dictionary<string, string> _searchResult = new Dictionary<string, string>();
+    private string _searchText = "";
+    protected override async Task OnInitializedAsync()
+    {
+        solution = await SolutionInspectionService.GetSolutionAsync();
+    }
+
+    private void SearchByProperty()
+    {
+        _searchResult = SolutionInspectionService.Search(solution, _searchText);
+    }
+}

@@ -1,0 +1,34 @@
+﻿@page "/solutiondata"
+
+@using BlazorTable
+@inject SolutionInspectionService SolutionInspectionService
+@inject MetaDataTransformer MetaDataTransformer
+
+@if (solution == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <Table TableItem="ProjectOverviewMetaData" Items="solution.Projects" PageSize="-1">
+
+        <Column TableItem="ProjectOverviewMetaData" Title="AssemblyName" Field="@(x => x.AssemblyName)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectOverviewMetaData" Title="TargetFramework" Field="@(x => x.TargetFramework)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectOverviewMetaData" Title="RuntimeIdentifiers" Field="@(x => x.RuntimeIdentifiers)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectOverviewMetaData" Title="LangVersion" Field="@(x => x.LangVersion)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectOverviewMetaData" Title="PackageCount" Field="@(x => x.PackageCount)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectOverviewMetaData" Title="ContainsUnstablePackages" Field="@(x => x.ContainsUnstablePackages)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectOverviewMetaData" Title="SignAssembly" Field="@(x => x.SignAssembly)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectOverviewMetaData" Title="GenerateDocumentationFile" Field="@(x => x.GenerateDocumentationFile)" Sortable="true" Filterable="true" />
+    </Table>
+
+}
+
+@code {
+    private ProjectMetaData<ProjectOverviewMetaData>? solution;
+
+    protected override async Task OnInitializedAsync()
+    {
+        solution = await SolutionInspectionService.GetProjectMetaDataAsync<ProjectOverviewMetaData>(MetaDataTransformer.GetProjectOverviewMetaData);
+    }
+}

@@ -1,0 +1,70 @@
+﻿@page "/"
+
+@inject NavigationManager NavigationManager
+@inject SolutionInspectionService SolutionInspectionService
+
+<EditForm Model="@_inputModel" OnValidSubmit="@Refresh">
+    <InputText class="form-control" id="name" placeholder="c:\path\to\solution.sln" @bind-Value="_inputModel.SolutionPath" />
+</EditForm>
+
+@if (_solution == null)
+{
+    if (!string.IsNullOrEmpty(State.SolutionPath))
+    {
+        <p><em>Loading...</em></p>
+    }
+}
+else
+{
+    <h3>@_solution.Projects.Count() projects found</h3>
+    <h3>Target frameworks</h3>
+    <ul>
+        @foreach (var x in _solution.TargetFrameworks)
+        {
+            <li>@x</li>
+        }
+    </ul>
+
+    <h3>Signed assemblies</h3>
+    <ul>
+        @foreach (var x in _solution.SignableAssemblies)
+        {
+            <li>@x</li>
+        }
+    </ul>
+
+    <h3>Unstable packages</h3>
+    <ul>
+        @foreach (var x in _solution.UnstablePackages)
+        {
+            <li>@x.Key  @x.Value</li>
+        }
+    </ul>
+}
+
+@code {
+    private void Refresh()
+    {
+        State.SolutionPath = _inputModel.SolutionPath;
+        State.Solution = null;
+
+        NavigationManager.NavigateTo("/", true);
+    }
+
+    InputModel _inputModel = new();
+
+    private SolutionMetaData? _solution;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (State.SolutionPath is not { Length: 0 })
+        {
+            _solution = await SolutionInspectionService.GetSolutionMetaDataAsync();
+        }
+    }
+
+    class InputModel
+    {
+        public string SolutionPath { get; set; } = "";
+    }
+}

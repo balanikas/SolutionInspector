@@ -1,0 +1,36 @@
+﻿@page "/packaging"
+
+@using BlazorTable
+@inject SolutionInspectionService SolutionInspectionService
+@inject MetaDataTransformer MetaDataTransformer
+
+@if (solution == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <Table TableItem="ProjectPackagingMetaData" Items="solution.Projects" PageSize="-1">
+        <Column TableItem="ProjectPackagingMetaData" Title="PackageId" Field="@(x => x.PackageId)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="NuspecFile" Field="@(x => x.NuspecFile)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="IsPackable" Field="@(x => x.IsPackable)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="PackageVersion" Field="@(x => x.PackageVersion)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="PackageTags" Field="@(x => x.PackageTags)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="Product" Field="@(x => x.Product)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="Description" Field="@(x => x.Description)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="Company" Field="@(x => x.Company)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="Authors" Field="@(x => x.Authors)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="Copyright" Field="@(x => x.Copyright)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="PackageProjectUrl" Field="@(x => x.PackageProjectUrl)" Sortable="true" Filterable="true" />
+        <Column TableItem="ProjectPackagingMetaData" Title="PackageLicenseUrl" Field="@(x => x.PackageLicenseUrl)" Sortable="true" Filterable="true" />
+    </Table>
+}
+
+@code {
+    private ProjectMetaData<ProjectPackagingMetaData>? solution;
+
+    protected override async Task OnInitializedAsync()
+    {
+        solution = await SolutionInspectionService.GetProjectMetaDataAsync<ProjectPackagingMetaData>(MetaDataTransformer.GetProjectPackagingMetaData);
+    }
+}
